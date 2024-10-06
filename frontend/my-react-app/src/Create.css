@@ -1,0 +1,36 @@
+/* Create.css */
+
+.modal-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-dialog-centered {
+    max-width: 500px;
+    margin: auto;
+  }
+  
+  .popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  }
+  
+  .popup-inner {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .popup-buttons button {
+    margin-right: 10px;
+  }
+  

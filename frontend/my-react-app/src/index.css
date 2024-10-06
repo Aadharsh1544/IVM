@@ -1,0 +1,45 @@
+
+  .device-types-container {
+    /* display: flex; */
+    /* flex-wrap: wrap; Allow wrapping to create multiple rows */
+    /* overflow: auto; Enable both horizontal and vertical scrolling if needed */
+    /* max-height: 300px; Adjust height for better fit */
+    padding: 0.5rem;
+    border: 1px solid #ddd; /* Optional: Border for visual separation */
+    border-radius: 5px; /* Optional: Rounded corners */
+    /* gap: 0.5rem; Space between device type cards */
+  }
+  
+  .device-type-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 0.5rem;
+    background-color: #f9f9f9;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+    /* flex: 1 1 120px; Adjust width and allows for wrapping */
+  }
+  
+  .device-type-card h5 {
+    font-size: 0.75rem; /* Smaller font size */
+    margin-bottom: 0.5rem;
+  }
+  
+  .device-type-card p {
+    margin-bottom: 0.5rem;
+  }
+  
+  .device-type-card button {
+    font-size: 0.75rem; /* Smaller button font size */
+  }
+  
+  .table-container {
+    margin-top: 1rem; /* Space between device types and table */
+    overflow-x: auto; /* Enable horizontal scrolling for the table if needed */
+  }
+  
+  .table {
+    min-width: 800px; /* Ensure table has enough width */
+  }
+  
