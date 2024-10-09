@@ -84,18 +84,7 @@ const onBarClick = (event, elements) => {
           data={data}
           height={320}
         />
-        {/* <p className="d-flex justify-content-between align-items-center mb-1">
-        <span>{activeCount || 0}</span>
-        <button className="btn btn-success btn-sm" onClick={() => handleStatusChange(deviceType, 'Active')}>
-          Active
-        </button>
-      </p>
-      <p className="d-flex justify-content-between align-items-center mb-0">
-        <span>{inactiveCount || 0}</span>
-        <button className="btn btn-danger btn-sm" onClick={() => handleStatusChange(deviceType, 'Inactive')}>
-          Inactive
-        </button>
-      </p> */}
+        
       </div>
     </div>
   );

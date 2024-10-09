@@ -2,24 +2,24 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { PrismaClient } = require("@prisma/client");
 const cors = require("cors");
-
+ 
 const app = express();
 app.use(cors({ origin: "*" }));
 const port = 5000;
-
+ 
 const prisma = new PrismaClient();
-
+ 
 app.use(bodyParser.json());
-
+ 
 // Route to create a new data entry in the database
 app.post("/data", async (req, res) => {
   const { Rack, DeviceType, MAC, Location, Status } = req.body;
-
+ 
   // Validate required fields
   if (!Rack || !DeviceType || !MAC || !Location || !Status) {
     return res.status(400).json({ error: "All fields are required" });
   }
-
+ 
   try {
     const newData = await prisma.inventory.create({
       data: {
@@ -36,7 +36,7 @@ app.post("/data", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
+ 
 // Existing route to get data by Rack
 app.get("/data/rack/:id", async (req, res) => {
   const { id } = req.params;
@@ -54,7 +54,7 @@ app.get("/data/rack/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
+ 
 // Route to get all available racks (sorted in ascending order)
 app.get("/racks", async (req, res) => {
   try {
@@ -75,23 +75,23 @@ app.get("/racks", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
+ 
 // Route to get all data
 app.get("/data/all", async (req, res) => {
   try {
     const { query } = req;
     const findQuery = {};
-
-    if (query?.deviceType && query?.deviceType.length > 0) {
+ 
+    if (query?.deviceType && query.deviceType.length > 0) {
       if (findQuery.where === undefined) findQuery.where = {};
       findQuery.where.DeviceType = query.deviceType;
     }
-
-    if (query?.status && query?.status.length > 0) {
+ 
+    if (query?.status && query.status.length > 0) {
       if (findQuery.where === undefined) findQuery.where = {};
       findQuery.where.Status = query.status;
     }
-
+ 
     const data = await prisma.inventory.findMany(findQuery);
     const sorted = data.sort(
       (a, b) =>
@@ -104,12 +104,12 @@ app.get("/data/all", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
+ 
 // Route to update the data
 app.put("/data/:id", async (req, res) => {
   const { id } = req.params;
   const { Rack, DeviceType, MAC, Location, Status } = req.body;
-
+ 
   try {
     const updatedData = await prisma.inventory.update({
       where: { id },
@@ -121,7 +121,7 @@ app.put("/data/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
+ 
 // Route to delete data
 app.delete("/data/:id", async (req, res) => {
   const { id } = req.params;
@@ -139,7 +139,7 @@ app.delete("/data/:id", async (req, res) => {
     }
   }
 });
-
+ 
 // Search by MAC address
 app.get("/data", async (req, res) => {
   const { mac } = req.query;
@@ -147,7 +147,7 @@ app.get("/data", async (req, res) => {
     if (!mac) {
       return res.status(400).json({ message: "MAC address is required" });
     }
-
+ 
     const data = await prisma.inventory.findMany({
       where: {
         MAC: {
@@ -155,7 +155,7 @@ app.get("/data", async (req, res) => {
         },
       },
     });
-
+ 
     if (data.length > 0) {
       res.json(data);
     } else {
@@ -168,66 +168,49 @@ app.get("/data", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
+ 
 // Route to get device counts by type (active/inactive)
 app.get("/device-counts", async (req, res) => {
   try {
-    const deviceTypes = [
-      "APs",
-      "BPD R3G",
-      "BPD R3I",
-      "BPD R3W",
-      "Bridge",
-      "controller",
-      "eNIC",
-      "eROTA",
-      "FSU",
-      "Gen4NICs",
-      "Gen5NICs",
-      "Genus DLMS/COSEM Meter",
-      "meter",
-      "meter - NIC",
-      "meter - uAP",
-      "NIC",
-      "PVA",
-      "Raspberry PI",
-      "Relay",
-      "Relay PI",
-      "sAP",
-      "SIM",
-      "uAP",
-      "Streetlight",
-    ];
-    let deviceCounts = {};
-
-    for (const type of deviceTypes) {
+    // Fetch distinct device types from the database
+    const deviceTypes = await prisma.inventory.findMany({
+      select: {
+        DeviceType: true,
+      },
+      distinct: ["DeviceType"],
+    });
+ 
+    const deviceCounts = {};
+ 
+    for (const { DeviceType } of deviceTypes) {
       const activeCount = await prisma.inventory.count({
         where: {
-          DeviceType: type,
+          DeviceType,
           Status: "Active",
         },
       });
-
+ 
       const inactiveCount = await prisma.inventory.count({
         where: {
-          DeviceType: type,
+          DeviceType,
           Status: "Inactive",
         },
       });
-
-      deviceCounts[type] = {
+ 
+      deviceCounts[DeviceType] = {
         active: activeCount,
         inactive: inactiveCount,
       };
     }
-
+ 
     res.json(deviceCounts);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
+ 
+ 
 // Route to fetch devices by status (active/inactive)
 app.get("/data/status/:deviceType/:statusType", async (req, res) => {
   const { deviceType, statusType } = req.params;
@@ -244,7 +227,23 @@ app.get("/data/status/:deviceType/:statusType", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
+ 
+// Route to get distinct device types
+app.get("/device-types", async (req, res) => {
+  try {
+    const deviceTypes = await prisma.inventory.findMany({
+      select: {
+        DeviceType: true,
+      },
+      distinct: ["DeviceType"],
+    });
+    res.json(deviceTypes.map(dt => dt.DeviceType));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+ 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
