@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+
 
 const RackFilter = ({ selectedRack, handleRackChange, racks }) => {
   return (

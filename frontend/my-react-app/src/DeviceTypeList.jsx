@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+
 import DeviceTypeCard from './DeviceTypeCard';
 
 const DeviceTypeList = ({ deviceCounts, handleStatusChange }) => {

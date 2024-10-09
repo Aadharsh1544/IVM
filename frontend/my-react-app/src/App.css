@@ -18,10 +18,12 @@
 .sidebar-list {
   list-style: none;
   padding: 0;
+  
 }
 
 .sidebar-list div {
-  padding: 1rem;
+  padding: 0.5rem;
+  font-size: medium;
   color: white;
   background-color: #ffffff10;
 }

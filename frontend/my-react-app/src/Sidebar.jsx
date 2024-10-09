@@ -1,11 +1,11 @@
-import React from "react";
+
 import { Link } from "react-router-dom";
 import "./App.css"; 
 
 const Sidebar = () => {
   return (
     <div className="sidebar">
-      <h3 className="sidebar-title">Aadharsh Menu</h3>
+      <h3 className="sidebar-title">Inventory</h3>
       <div className="sidebar-list">
         <Link to="/">
           <div>Home</div>
